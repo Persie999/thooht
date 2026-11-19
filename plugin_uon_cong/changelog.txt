@@ -1,0 +1,13 @@
+KIẾN MỘC – UỐN CONG · NHẬT KÝ PHIÊN BẢN
+
+v0.1 (19/11/2026) – Khởi tạo · chưa đóng gói
+- Khung plugin: loader, menu Extensions, toolbar (Tạo tấm uốn, Xuất DXF, Cài đặt), nhật ký lỗi, cài đặt JSON.
+- Tính rãnh: độ sâu = độ dày − chừa đáy, bước gợi ý theo bán kính, bảng rãnh theo độ dày, cảnh báo sườn mỏng.
+- Công cụ chọn mặt: lan mặt cong liền qua cạnh mềm, nút thông số vẽ trên màn hình.
+- Test: mô phỏng (chưa chạy trên SketchUp thật).
+
+Còn dở:
+- Chờ anh chốt câu hỏi mở Q1–Q6 trong SPEC.
+- Dựng tấm cong 3D, tấm phẳng có rãnh, liên kết attribute.
+- Xuất DXF cho Aspire.
+- Hộp Cài đặt HtmlDialog (v0.1 nút Cài đặt mới mở file JSON).
