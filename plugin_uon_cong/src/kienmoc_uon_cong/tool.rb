@@ -98,10 +98,12 @@ module KienMoc
         kq['loi'] ||= loi_lop
         kq['canh_bao_lop'] = cb_lop
         return kq if kq['loi'] || kq['r_min'].nil?
-        buoc = TinhRanh.buoc_goi_y(kq['r_min'], ts['do_day'], ts['chua_day'], ts['dao'],
+        w = TinhRanh.rong_hieu_dung(ts['dao'], @settings['ziczac_bien_do'], @settings['ziczac_buoc'])
+        buoc = TinhRanh.buoc_goi_y(kq['r_min'], ts['do_day'], ts['chua_day'], w,
                                    he_so: @settings['he_so_buoc'], lam_tron: @settings['lam_tron_buoc'])
+        kq['rong_hieu_dung'] = w
         kq['buoc_r_min'] = buoc
-        kq['canh_bao'] = TinhRanh.canh_bao(buoc, ts['dao'], @settings['suon_toi_thieu'])
+        kq['canh_bao'] = TinhRanh.canh_bao(buoc, w, @settings['suon_toi_thieu'])
         kq
       end
 
@@ -110,7 +112,8 @@ module KienMoc
         s = @settings
         lines = [format('Melamine %.1f (còn %.1f) · nhựa %.1f · xương %s', s['day_be_mat'], s['con_lai_be_mat'],
                         s['day_dem'], s['xuong_kieu'] == 'lien' ? 'liền' : 'sườn rời'),
-                 format('Rãnh nhựa: dao %.1f · chừa đáy %.1f%s', ts['dao'], ts['chua_day'], ts['tu_bang'] ? '' : ' (mặc định)')]
+                 format('Rãnh ziczac: dao %.1f · chừa đáy %.1f%s · biên độ %.1f / bước răng %.1f', ts['dao'], ts['chua_day'],
+                        ts['tu_bang'] ? '' : ' (mặc định)', s['ziczac_bien_do'], s['ziczac_buoc'])]
         kq = @ket_qua
         if kq.nil?
           lines << 'Rê chuột lên mặt cong của khối'

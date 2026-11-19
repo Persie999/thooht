@@ -37,9 +37,31 @@ module KienMoc
         format('Sườn giữa 2 rãnh %.1f mm < %.1f mm: bán kính quá nhỏ cho dao / độ dày này', suon, suon_toi_thieu)
       end
 
-      # Rãnh mặt lồi (ziczac so le): giữa 2 rãnh mặt lõm liền kề
-      def so_le(lom)
-        lom.each_cons(2).map { |a, b| ((a + b) / 2.0).round(3) }
+      # Bề rộng rãnh hiệu dụng theo phương uốn: w' = w / cos θ, tan θ = biên độ / (bước răng / 2)
+      def rong_hieu_dung(dao, bien_do, buoc_rang)
+        return dao if bien_do <= 0 || buoc_rang <= 0
+        dao / Math.cos(Math.atan(bien_do / (buoc_rang / 2.0)))
+      end
+
+      # Đường tâm 1 rãnh ziczac quanh trục x, từ y_dau đến y_cuoi: [[x, y], ...]
+      # Bắt đầu ở x − A/2, đổi phía mỗi nửa bước răng; điểm cuối nội suy đúng tại y_cuoi.
+      def ziczac(x, y_dau, y_cuoi, bien_do, buoc_rang)
+        return [[x, y_dau], [x, y_cuoi]] if bien_do <= 0 || buoc_rang <= 0
+        h = buoc_rang / 2.0
+        a = bien_do / 2.0
+        pts = []
+        i = 0
+        y = y_dau
+        while y < y_cuoi - 1e-9
+          pts << [(x + (i.even? ? -a : a)).round(3), y.round(3)]
+          y += h
+          i += 1
+        end
+        t = (y_cuoi - (y - h)) / h # nội suy đoạn cuối
+        x0 = x + ((i - 1).even? ? -a : a)
+        x1 = x + (i.even? ? -a : a)
+        pts << [(x0 + (x1 - x0) * t).round(3), y_cuoi.round(3)]
+        pts
       end
 
       # Đầu rãnh: chừa 2 mép tấm hay xẻ hết → [y_dau, y_cuoi] mm theo chiều rộng tấm

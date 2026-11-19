@@ -25,7 +25,9 @@ module KienMoc
           ],
           'chua_day_mac_dinh' => 2.0,
           'duong_kinh_dao'    => 3.0,
-          # Rãnh
+          # Rãnh ziczac
+          'ziczac_bien_do'    => 6.0,
+          'ziczac_buoc'       => 20.0,
           'he_so_buoc'        => 1.0,
           'lam_tron_buoc'     => 0.5,
           'suon_toi_thieu'    => 2.0,
@@ -38,15 +40,14 @@ module KienMoc
           'rong_suon'         => 80.0,
           # Layer DXF
           'layer_vien'        => 'KM_VIEN',
-          'layer_ranh_lom'    => 'KM_RANH_LOM',
-          'layer_ranh_loi'    => 'KM_RANH_LOI',
+          'layer_ranh'        => 'KM_RANH',
           'layer_bao'         => 'KM_BAO',
           'layer_suon'        => 'KM_SUON',
           'thu_muc_xuat'      => ''
         }
       end
 
-      SO = %w[day_be_mat con_lai_be_mat bao_tran day_dem chua_day_mac_dinh duong_kinh_dao he_so_buoc
+      SO = %w[day_be_mat con_lai_be_mat bao_tran day_dem chua_day_mac_dinh duong_kinh_dao ziczac_buoc he_so_buoc
               lam_tron_buoc suon_toi_thieu dai_chua_dau day_xuong khoang_cach_suon rong_suon].freeze
       BOOL = %w[chua_dau_ranh].freeze
       CHON = { 'xuong_kieu' => %w[roi lien] }.freeze
@@ -79,6 +80,9 @@ module KienMoc
           out[k] = if SO.include?(k)
                      f = Float(v) rescue nil
                      f && f > 0 ? f : d[k]
+                   elsif k == 'ziczac_bien_do' # cho phép 0 = rãnh thẳng
+                     f = Float(v) rescue nil
+                     f && f >= 0 ? f : d[k]
                    elsif BOOL.include?(k)
                      v == true || v == false ? v : d[k]
                    elsif CHON.key?(k)

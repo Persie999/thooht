@@ -46,9 +46,18 @@ class TestTinhRanh < Minitest::Test
     assert_equal [10.0], v
   end
 
-  def test_so_le_mat_loi_giua_2_ranh_lom
-    assert_equal [150.0, 250.0], T.so_le([100.0, 200.0, 300.0])
-    assert_empty T.so_le([100.0])
+  def test_rong_hieu_dung_ziczac
+    assert_in_delta 3.0, T.rong_hieu_dung(3.0, 0.0, 20.0), 1e-9
+    # tan θ = 6/10 → cos θ = 0.8575 → w' = 3.4986
+    assert_in_delta 3.4986, T.rong_hieu_dung(3.0, 6.0, 20.0), 1e-3
+  end
+
+  def test_duong_ziczac
+    pts = T.ziczac(100.0, 0.0, 30.0, 6.0, 20.0)
+    assert_equal [[97.0, 0.0], [103.0, 10.0], [97.0, 20.0], [103.0, 30.0]], pts
+    pts = T.ziczac(100.0, 0.0, 25.0, 6.0, 20.0) # điểm cuối nội suy giữa đoạn
+    assert_equal [100.0, 25.0], pts.last
+    assert_equal [[50.0, 0.0], [50.0, 600.0]], T.ziczac(50.0, 0.0, 600.0, 0.0, 20.0)
   end
 
   def test_chua_dau_ranh
@@ -92,7 +101,7 @@ class TestSettings < Minitest::Test
     s = S.load
     assert_equal 12.0, s['day_dem']
     assert_equal 1.0, s['he_so_buoc'] # sai kiểu → mặc định
-    assert_equal 'KM_RANH_LOM', s['layer_ranh_lom']
+    assert_equal 'KM_RANH', s['layer_ranh']
   end
 
   def test_file_hong_tra_mac_dinh

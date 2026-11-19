@@ -30,15 +30,18 @@ Ký hiệu: **[MỞ]** = câu hỏi chờ anh chốt; **[GIẢ ĐỊNH]** = em t
 - Tấm phẳng melamine: hình chữ nhật dài trải phẳng × rộng; DXF có đường viền + đường bao vùng bào (pocket mặt sau).
 
 ### 3.3 Lớp đệm – nhựa đặc xẻ rãnh ziczac
-- [GIẢ ĐỊNH, chờ thẻ quyết định] Ziczac = rãnh thẳng song song đường sinh, xẻ **so le hai mặt**: rãnh mặt lõm và rãnh mặt lồi xen kẽ, mặt cắt ngang thành hình ziczac.
-- Độ sâu mỗi rãnh `d = day_dem − chua_day` (chua_day lấy theo bảng rãnh, mục 5).
-- Bước giữa 2 rãnh mặt lõm (rãnh khép vừa khít khi uốn): `p = w × R / (d + s/2)`, w = đường kính dao, s = chua_day, R = bán kính tại mặt lồi lớp đệm.
+- Ziczac (anh chốt 19/11): mỗi rãnh là 1 **đường gấp khúc chữ V lặp lại**, xẻ **một mặt** (mặt lõm, phía xương), chạy theo đường sinh hết chiều rộng tấm.
+  - Biên độ `ziczac_bien_do` (đỉnh–đỉnh, theo phương trải phẳng, mặc định 6 mm), bước răng `ziczac_buoc` (1 chữ V theo đường sinh, mặc định 20 mm).
+  - Các rãnh cùng pha (song song nhau) → sườn nhựa giữa 2 rãnh dày đều.
+  - [GIẢ ĐỊNH] Rãnh chạy theo đường sinh (vuông góc phương uốn), như rãnh thẳng; ziczac chỉ đổi hình đường dao.
+- Độ sâu rãnh `d = day_dem − chua_day` (chua_day theo bảng rãnh, mục 5).
+- Bề rộng rãnh hiệu dụng theo phương uốn: `w' = w / cos θ`, `tan θ = bien_do / (buoc/2)`, w = đường kính dao. Biên độ 0 = rãnh thẳng, `w' = w`.
+- Bước giữa 2 rãnh (rãnh khép vừa khít khi uốn): `p = w' × R / (d + s/2)`, s = chua_day, R = bán kính tại mặt lồi lớp đệm.
   - Bước gợi ý = `p × he_so_buoc`, làm tròn XUỐNG theo `lam_tron_buoc`.
   - **Chưa kiểm chứng bằng cắt thử**; với nhựa, anh cắt mẫu rồi chỉnh `he_so_buoc`.
-- Rãnh mặt lồi: đặt chính giữa 2 rãnh mặt lõm liền kề.
 - Bán kính thay đổi theo biên dạng → bước tính riêng từng đoạn, rãnh căn giữa đoạn.
 - Chừa đầu rãnh (Q4): bật `chua_dau_ranh` → rãnh dừng cách 2 mép tấm `dai_chua_dau` (mặc định 20 mm); tắt → xẻ hết chiều rộng.
-- Cảnh báo (không chặn): sườn giữa 2 rãnh cùng mặt `p − w < suon_toi_thieu`. Lỗi: `chua_day ≤ 0` hoặc `≥ day_dem`.
+- Cảnh báo (không chặn): sườn giữa 2 rãnh `p − w' < suon_toi_thieu`. Lỗi: `chua_day ≤ 0` hoặc `≥ day_dem`.
 
 ### 3.4 Xương – sườn CNC (Q3: chọn trong cài đặt)
 - `xuong_kieu = "roi"`: nhiều sườn dày `day_xuong`, đặt dọc đường sinh, cách nhau `khoang_cach_suon` (tâm–tâm), sườn đầu và cuối sát 2 mép tấm.
@@ -89,7 +92,7 @@ Dictionary "KienMoc_UonCong" trên instance chi tiết sinh ra:
 | `do_day` | Float mm | độ dày lớp |
 | `chua_day` | Float mm | lớp chừa đáy rãnh (đệm) hoặc phần còn lại sau bào (bề mặt) |
 | `dao` | Float mm | đường kính dao |
-| `ranh` | String JSON | vị trí rãnh `{"lom":[...], "loi":[...]}` mm từ mép trái tấm phẳng |
+| `ranh` | String JSON | vị trí tâm rãnh (trục ziczac) mm từ mép trái tấm phẳng |
 | `vung_bao` | String JSON | `[x_dau, x_cuoi]` mm, chỉ lớp bề mặt |
 | `phien_ban` | String | VERSION plugin |
 
@@ -104,20 +107,19 @@ Dictionary "KienMoc_UonCong" trên instance chi tiết sinh ra:
 `%APPDATA%\KienMoc\uon_cong_settings.json`, merge với mặc định khi đọc. Thứ tự trong hộp Cài đặt:
 1. Lớp bề mặt: `day_be_mat` 18 · `con_lai_be_mat` 2.0 · `bao_tran` 10
 2. Lớp đệm: `day_dem` 16 · `bang_ranh` (mục 5) · `chua_day_mac_dinh` 2.0 · `duong_kinh_dao` 3
-3. Rãnh: `he_so_buoc` 1.0 · `lam_tron_buoc` 0.5 · `suon_toi_thieu` 2.0 · `chua_dau_ranh` có/không (mặc định không) · `dai_chua_dau` 20
+3. Rãnh: `ziczac_bien_do` 6 · `ziczac_buoc` 20 · `he_so_buoc` 1.0 · `lam_tron_buoc` 0.5 · `suon_toi_thieu` 2.0 · `chua_dau_ranh` có/không (mặc định không) · `dai_chua_dau` 20
 4. Xương: `xuong_kieu` roi/lien (mặc định roi) · `day_xuong` 18 · `khoang_cach_suon` 300 · `rong_suon` 80
-5. Layer DXF (Q6): `layer_vien` KM_VIEN · `layer_ranh_lom` KM_RANH_LOM · `layer_ranh_loi` KM_RANH_LOI · `layer_bao` KM_BAO · `layer_suon` KM_SUON
+5. Layer DXF (Q6): `layer_vien` KM_VIEN · `layer_ranh` KM_RANH · `layer_bao` KM_BAO · `layer_suon` KM_SUON
 6. `thu_muc_xuat` – rỗng = cùng thư mục file .skp
 - Mặc định `day_dem` = 16 để `con_lai_be_mat + day_dem = day_be_mat` (2 + 16 = 18).
 - Nhập / xuất cài đặt: chưa làm (v0.2+).
 
 ## 12. Xuất dữ liệu (DXF cho Aspire)
 - DXF R12 ASCII, đơn vị mm, gốc (0,0) = góc dưới trái tấm phẳng.
-- Rãnh vẽ **đường tâm** (LINE), Aspire chạy profile "on line" với dao = w. Tên layer lấy từ cài đặt mục 11.5.
+- Rãnh vẽ **đường tâm**: mỗi rãnh 1 POLYLINE hở theo đường ziczac, Aspire chạy profile "on line" với dao = w. Tên layer lấy từ cài đặt mục 11.5.
 - Tấm melamine: `layer_vien` + `layer_bao` (polyline kín vùng bào mặt sau).
-- Tấm nhựa: `layer_vien` + `layer_ranh_lom` + `layer_ranh_loi` (rãnh mặt lồi gia công sau khi lật tấm).
+- Tấm nhựa: `layer_vien` + `layer_ranh` (một mặt, không lật tấm).
 - Sườn: `layer_suon` (biên dạng kín từng sườn).
-- **[MỞ]** Lật tấm nhựa gia công mặt lồi: DXF rãnh mặt lồi có cần lật gương sẵn không? [GIẢ ĐỊNH] chưa lật, cùng hệ tọa độ mặt lõm.
 - Tên file: `<ten_khoi>_<ma_lien_ket>_<lop>.dxf`; trùng tên → thêm `_2`, `_3`.
 - Aspire đọc được hay không: **chưa kiểm chứng**, anh mở thử trên Aspire.
 
@@ -132,6 +134,7 @@ Dictionary "KienMoc_UonCong" trên instance chi tiết sinh ra:
 - R ước lượng từ mặt con: mặt cong chia càng ít mặt càng kém chính xác.
 
 ## 15. Quyết định đã chốt
+- 19/11/2026 – Ziczac = đường gấp khúc chữ V xẻ một mặt (chọn trên thẻ quyết định).
 - 19/11/2026 – Q6: DXF rãnh theo đường tâm, tên layer chọn trong cài đặt.
 - 19/11/2026 – Q5: mỗi lần tạo là bộ mới, không cập nhật bộ cũ.
 - 19/11/2026 – Q3, Q4: kiểu xương (sườn rời / liền) và chừa đầu rãnh là lựa chọn trong cài đặt.
