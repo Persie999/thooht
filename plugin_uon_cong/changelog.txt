@@ -2,12 +2,15 @@ KIẾN MỘC – UỐN CONG · NHẬT KÝ PHIÊN BẢN
 
 v0.1 (19/11/2026) – Khởi tạo · chưa đóng gói
 - Khung plugin: loader, menu Extensions, toolbar (Tạo tấm uốn, Xuất DXF, Cài đặt), nhật ký lỗi, cài đặt JSON.
-- Tính rãnh: độ sâu = độ dày − chừa đáy, bước gợi ý theo bán kính, bảng rãnh theo độ dày, cảnh báo sườn mỏng.
+- Cấu tạo đã chốt (Q1–Q6): melamine bào mỏng ở vùng cong → nhựa đặc xẻ rãnh ziczac → sườn CNC; mặt chọn = mặt ngoài hoàn thiện; mỗi lần tạo 1 bộ mới.
+- Tính rãnh nhựa: độ sâu = độ dày − chừa đáy, bước gợi ý theo bán kính, rãnh mặt lồi so le giữa 2 rãnh mặt lõm, chừa đầu rãnh tùy chọn.
+- Tính vùng bào melamine (nới mỗi bên, kẹp mép), kiểm tra còn lại + nhựa = độ dày melamine.
+- Cài đặt: độ dày từng lớp, bảng rãnh nhựa, kiểu xương (sườn rời / liền), chừa đầu rãnh, tên 5 layer DXF.
 - Công cụ chọn mặt: lan mặt cong liền qua cạnh mềm, nút thông số vẽ trên màn hình.
-- Test: mô phỏng (chưa chạy trên SketchUp thật).
+- Test: 36 test mô phỏng pass (chưa chạy trên SketchUp thật).
 
 Còn dở:
-- Chờ anh chốt câu hỏi mở Q1–Q6 trong SPEC.
-- Dựng tấm cong 3D, tấm phẳng có rãnh, liên kết attribute.
+- Chờ anh chốt kiểu ziczac (so le hai mặt?) và việc lật gương DXF rãnh mặt lồi (SPEC mục 3.3, 12).
+- Dựng chi tiết cong 3D, tấm phẳng melamine / nhựa, sườn, liên kết attribute.
 - Xuất DXF cho Aspire.
 - Hộp Cài đặt HtmlDialog (v0.1 nút Cài đặt mới mở file JSON).

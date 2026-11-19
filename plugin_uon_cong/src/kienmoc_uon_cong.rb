@@ -13,8 +13,8 @@ module KienMoc
       ext.version     = VERSION
       ext.creator     = 'Kiến Mộc'
       ext.copyright   = '2026 Kiến Mộc'
-      ext.description = 'Uốn cong ván MDF bằng xẻ rãnh (kerf) trên CNC: từ mặt cong của khối, tính rãnh, ' \
-                        'dựng tấm cong 3D + tấm phẳng có rãnh và xuất DXF cho Aspire.'
+      ext.description = 'Chi tiết cong 3 lớp (melamine bào mỏng, nhựa đặc xẻ rãnh ziczac, sườn CNC): từ mặt cong của khối, ' \
+                        'tính rãnh, dựng chi tiết cong 3D + tấm phẳng và xuất DXF cho Aspire.'
       Sketchup.register_extension(ext, true)
       file_loaded(__FILE__)
     end

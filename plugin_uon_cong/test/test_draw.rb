@@ -50,6 +50,15 @@ class TestTool < Minitest::Test
     assert(@v.texts.any? { |t| t.include?('Sườn giữa') })
   end
 
+  def test_lop_lech_canh_bao
+    UC::Settings.save('day_dem' => 10.0)
+    t = UC::Tool.new
+    @m.hit = [Geom::Point3d.new, [Sketchup::Group.new(Geom::Transformation.new), MockSU.make_cung[0]]]
+    t.onMouseMove(0, 1, 1, @v)
+    t.draw(@v)
+    assert(@v.texts.any? { |x| x.include?('không phẳng') })
+  end
+
   def test_loi_3d_van_ve_2d
     hover(MockSU.make_cung[0])
     @v.fail_3d = true

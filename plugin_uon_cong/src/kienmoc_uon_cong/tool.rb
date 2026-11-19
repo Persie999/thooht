@@ -94,6 +94,9 @@ module KienMoc
         ts = Settings.thong_so(@settings)
         kq['thong_so'] = ts
         kq['loi'] ||= TinhRanh.loi(ts['do_day'], ts['chua_day'], ts['dao'])
+        loi_lop, cb_lop = TinhRanh.kiem_tra_lop(@settings['day_be_mat'], @settings['con_lai_be_mat'], @settings['day_dem'])
+        kq['loi'] ||= loi_lop
+        kq['canh_bao_lop'] = cb_lop
         return kq if kq['loi'] || kq['r_min'].nil?
         buoc = TinhRanh.buoc_goi_y(kq['r_min'], ts['do_day'], ts['chua_day'], ts['dao'],
                                    he_so: @settings['he_so_buoc'], lam_tron: @settings['lam_tron_buoc'])
@@ -104,8 +107,10 @@ module KienMoc
 
       def dong_thong_tin
         ts = Settings.thong_so(@settings)
-        lines = [format('MDF %.1f · dao %.1f · chừa đáy %.1f%s', ts['do_day'], ts['dao'], ts['chua_day'],
-                        ts['tu_bang'] ? '' : ' (mặc định)')]
+        s = @settings
+        lines = [format('Melamine %.1f (còn %.1f) · nhựa %.1f · xương %s', s['day_be_mat'], s['con_lai_be_mat'],
+                        s['day_dem'], s['xuong_kieu'] == 'lien' ? 'liền' : 'sườn rời'),
+                 format('Rãnh nhựa: dao %.1f · chừa đáy %.1f%s', ts['dao'], ts['chua_day'], ts['tu_bang'] ? '' : ' (mặc định)')]
         kq = @ket_qua
         if kq.nil?
           lines << 'Rê chuột lên mặt cong của khối'
@@ -118,11 +123,12 @@ module KienMoc
           lines << format('Bước rãnh gợi ý %.1f mm', kq['buoc_r_min'])
           lines << kq['canh_bao'] if kq['canh_bao']
         end
+        lines << kq['canh_bao_lop'] if kq && kq['canh_bao_lop']
         lines
       end
 
       def tom_tat
-        dong_thong_tin.join("\n") + "\n\n(v0.1: chưa dựng tấm cong / tấm phẳng)"
+        dong_thong_tin.join("\n") + "\n\n(v0.1: chưa dựng chi tiết cong / tấm phẳng)"
       end
 
       def nut_rect
@@ -147,7 +153,7 @@ module KienMoc
       def ve_3d(view)
         return if @pts.empty?
         view.line_width = 3
-        view.drawing_color = @ket_qua && (@ket_qua['loi'] || @ket_qua['canh_bao']) ? MAU_CANH : MAU_TO
+        view.drawing_color = @ket_qua && (@ket_qua['loi'] || @ket_qua['canh_bao'] || @ket_qua['canh_bao_lop']) ? MAU_CANH : MAU_TO
         view.draw(GL_LINES, @pts)
       end
 

@@ -46,6 +46,28 @@ class TestTinhRanh < Minitest::Test
     assert_equal [10.0], v
   end
 
+  def test_so_le_mat_loi_giua_2_ranh_lom
+    assert_equal [150.0, 250.0], T.so_le([100.0, 200.0, 300.0])
+    assert_empty T.so_le([100.0])
+  end
+
+  def test_chua_dau_ranh
+    assert_equal [20.0, 580.0], T.doan_ranh(600.0, true, 20.0)
+    assert_equal [0.0, 600.0], T.doan_ranh(600.0, false, 20.0)
+  end
+
+  def test_vung_bao_noi_va_kep_mep
+    doan = [{ 'dai' => 100 }, { 'dai' => 300, 'r' => 300 }, { 'dai' => 5 }]
+    assert_equal [90.0, 405.0], T.vung_bao(doan, 10.0)
+    assert_nil T.vung_bao([{ 'dai' => 500 }], 10.0)
+  end
+
+  def test_kiem_tra_lop
+    assert_equal [nil, nil], T.kiem_tra_lop(18.0, 2.0, 16.0)
+    refute_nil T.kiem_tra_lop(18.0, 2.0, 15.0)[1]
+    refute_nil T.kiem_tra_lop(18.0, 18.0, 0.0)[0]
+  end
+
   def test_vi_tri_toan_phang
     assert_empty T.vi_tri([{ 'dai' => 500 }], 18.0, 2.5, 6.0)
   end
@@ -61,16 +83,16 @@ class TestSettings < Minitest::Test
 
   def test_mac_dinh_khi_chua_co_file
     s = S.load
-    assert_equal 18.0, s['do_day_dem']
+    assert_equal 16.0, s['day_dem']
     assert_equal S.defaults.keys, s.keys
   end
 
   def test_luu_va_doc_lai_merge
-    S.save('do_day_dem' => 12, 'he_so_buoc' => 'abc')
+    S.save('day_dem' => 12, 'he_so_buoc' => 'abc')
     s = S.load
-    assert_equal 12.0, s['do_day_dem']
+    assert_equal 12.0, s['day_dem']
     assert_equal 1.0, s['he_so_buoc'] # sai kiểu → mặc định
-    assert_equal 'KM_RANH', s['layer_ranh']
+    assert_equal 'KM_RANH_LOM', s['layer_ranh_lom']
   end
 
   def test_file_hong_tra_mac_dinh
@@ -81,13 +103,24 @@ class TestSettings < Minitest::Test
 
   def test_thong_so_theo_bang
     s = S.load
-    ts = S.thong_so(s, 12.0)
+    ts = S.thong_so(s, 10.0)
     assert_equal 2.0, ts['chua_day']
     assert ts['tu_bang']
     ts = S.thong_so(s, 25.0)
-    assert_equal 2.5, ts['chua_day']
-    assert_equal 6.0, ts['dao']
+    assert_equal 2.0, ts['chua_day']
+    assert_equal 3.0, ts['dao']
     refute ts['tu_bang']
+  end
+
+  def test_lua_chon_xuong_chua_dau_layer
+    s = S.normalize(S.defaults.merge('xuong_kieu' => 'lien', 'chua_dau_ranh' => true, 'layer_bao' => ' BAO_MAT_SAU '))
+    assert_equal 'lien', s['xuong_kieu']
+    assert_equal true, s['chua_dau_ranh']
+    assert_equal 'BAO_MAT_SAU', s['layer_bao']
+    s = S.normalize(S.defaults.merge('xuong_kieu' => 'xyz', 'chua_dau_ranh' => 'co', 'layer_vien' => ''))
+    assert_equal 'roi', s['xuong_kieu']
+    assert_equal false, s['chua_dau_ranh']
+    assert_equal 'KM_VIEN', s['layer_vien']
   end
 
   def test_bang_loc_dong_sai

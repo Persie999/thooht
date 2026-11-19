@@ -1,5 +1,5 @@
 # encoding: UTF-8
-# Tính rãnh kerf (SPEC mục 3.2). Hàm thuần, mọi số đo là Float mm, không gọi API SketchUp.
+# Tính rãnh lớp đệm nhựa và vùng bào melamine (SPEC mục 3.2, 3.3). Hàm thuần, mọi số đo là Float mm, không gọi API SketchUp.
 module KienMoc
   module UonCong
     module TinhRanh
@@ -12,7 +12,7 @@ module KienMoc
 
       # Lỗi chặn (không tạo được): trả chuỗi lỗi hoặc nil
       def loi(do_day, chua_day, dao)
-        return 'Độ dày MDF phải > 0' unless do_day > 0
+        return 'Độ dày lớp đệm phải > 0' unless do_day > 0
         return 'Đường kính dao phải > 0' unless dao > 0
         return "Lớp chừa đáy #{chua_day} mm phải > 0 và < độ dày #{do_day} mm" unless chua_day > 0 && chua_day < do_day
         nil
@@ -35,6 +35,39 @@ module KienMoc
         suon = buoc - dao
         return nil if suon >= suon_toi_thieu
         format('Sườn giữa 2 rãnh %.1f mm < %.1f mm: bán kính quá nhỏ cho dao / độ dày này', suon, suon_toi_thieu)
+      end
+
+      # Rãnh mặt lồi (ziczac so le): giữa 2 rãnh mặt lõm liền kề
+      def so_le(lom)
+        lom.each_cons(2).map { |a, b| ((a + b) / 2.0).round(3) }
+      end
+
+      # Đầu rãnh: chừa 2 mép tấm hay xẻ hết → [y_dau, y_cuoi] mm theo chiều rộng tấm
+      def doan_ranh(rong, chua, dai_chua)
+        chua ? [dai_chua, rong - dai_chua] : [0.0, rong]
+      end
+
+      # Vùng bào melamine: [x_dau, x_cuoi] bao các đoạn cong, nới bao_tran mỗi bên, kẹp trong tấm; nil = không cong
+      def vung_bao(doan, bao_tran)
+        x = 0.0
+        a = b = nil
+        doan.each do |dn|
+          if dn['r']
+            a ||= x
+            b = x + dn['dai'].to_f
+          end
+          x += dn['dai'].to_f
+        end
+        return nil if a.nil?
+        [[a - bao_tran, 0.0].max, [b + bao_tran, x].min]
+      end
+
+      # Kiểm tra độ dày các lớp: trả [lỗi, cảnh báo]
+      def kiem_tra_lop(day_be_mat, con_lai, day_dem, tol = 0.2)
+        return ["Phần còn lại sau bào #{con_lai} mm phải > 0 và < độ dày melamine #{day_be_mat} mm", nil] unless con_lai > 0 && con_lai < day_be_mat
+        lech = con_lai + day_dem - day_be_mat
+        cb = lech.abs > tol ? format('Còn lại %.1f + nhựa %.1f ≠ melamine %.1f: mặt trong không phẳng', con_lai, day_dem, day_be_mat) : nil
+        [nil, cb]
       end
 
       # Vị trí tâm rãnh (mm từ mép trái tấm phẳng).

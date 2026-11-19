@@ -37,7 +37,7 @@ module KienMoc
     unless file_loaded?(__FILE__)
       tao = Main.cmd('Tạo tấm uốn', 'Chọn 1 mặt của khối đã bo cong', 'tao.svg') { Sketchup.active_model.select_tool(Tool.new) }
       dxf = Main.cmd('Xuất DXF', 'Xuất tấm phẳng có rãnh ra DXF cho Aspire', 'dxf.svg') { Main.xuat_dxf }
-      cd  = Main.cmd('Cài đặt', 'Bảng rãnh, dao, lớp chừa đáy', 'cai_dat.svg') { Settings.mo_hop }
+      cd  = Main.cmd('Cài đặt', 'Độ dày các lớp, bảng rãnh, xương, layer DXF', 'cai_dat.svg') { Settings.mo_hop }
       log = Main.cmd('Mở nhật ký lỗi', 'Mở %APPDATA%\\KienMoc\\uon_cong_log.txt') { Log.open_file }
 
       menu = UI.menu('Extensions').add_submenu('Kiến Mộc – Uốn Cong')
